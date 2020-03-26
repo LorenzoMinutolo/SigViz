@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="width: 100%">
+  <center>
+    <h2>
+
+    </h2>
+  </center>
+</div>
+
+<div class="panel panel-default", id = 'plotter-collapse'>
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a class="toggle" data-toggle="collapse" href="#collapse-plotter"> <b>Detailed view for tile: {{tile_number}}</b> </a>
+      <a class="glyphicon glyphicon-question-sign" href="#" data-toggle="tooltip" style = "margin-left:10px"
+      title="Change plotting options, filtering, settings..."></a>
+    </h4>
+  </div>
+
+  <div id="collapse-plotter" class="panel-collapse collapse">
+    <div class="panel-body">
+      all my options
+    </div>
+  </div>
+</div>
+{% endblock %}

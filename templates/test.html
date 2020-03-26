@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+var triangle_view = "{{url_for('triangle_view')}}"
+</script>
+
+<div id="focal_plane_view" style="width: 100%; height: 100%;">
+
+<div>
+
+<!-- focal plane code -->
+<script type="text/javascript" src={{ url_for('static', filename = 'js/focal_plane.js') }}></script>
+
+<!-- make the focal plane grphics responsive to window change -->
+<style>
+
+.svg-container {
+   display: inline-block;
+   position: relative;
+   width: 60%;
+   padding-bottom: 60%; /* aspect ratio */
+   vertical-align: top;
+   overflow: hidden;
+ }
+ .svg-content-responsive {
+   display: inline-block;
+   position: absolute;
+   top: 10px;
+   left: 0;
+ }
+
+</style>
+
+<!-- <div id="main_plot" style="width: 100%; height: 100%;">
+
+<div> -->
+<!-- this gui does some plotting, we can reuse the code later -->
+<!-- <script type="text/javascript" src={{ url_for('static', filename = 'js/plot.js') }}></script> -->
+
+{% endblock %}
