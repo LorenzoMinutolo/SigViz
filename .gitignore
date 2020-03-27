@@ -42,3 +42,8 @@ __pycache__
 *.db
 migrations
 flask_session
+
+*.fdb_*
+*.fls
+*.aux
+*.toc
