@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+
+.svg-container {
+   display: inline-block;
+   position: relative;
+   width: 60%;
+   padding-bottom: 60%; /* aspect ratio */
+   vertical-align: top;
+   overflow: hidden;
+ }
+ .svg-content-responsive {
+   display: inline-block;
+   position: absolute;
+   top: 10px;
+   left: 0;
+ }
+
+</style>
 <div style="width: 100%">
   <center>
     <h2>
@@ -24,4 +42,11 @@
     </div>
   </div>
 </div>
+<div id="triangle_viewer">
+
+</div>
+
+<!-- focal plane code -->
+<script type="text/javascript" src={{ url_for('static', filename = 'js/triangle_view.js') }}></script>
+
 {% endblock %}
