@@ -47,3 +47,6 @@ flask_session
 *.fls
 *.aux
 *.toc
+
+
+Test.py
