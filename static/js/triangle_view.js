@@ -123,3 +123,13 @@ function update_colors(arr){
   }
 }
 update_colors(xxx)
+
+
+
+socket.on( 'triangle_data', function( msg ) {
+  console.log("Received plot configurations...")
+  msg_json = JSON.parse(msg)
+  
+  socket.emit('get_triangle', {})
+
+});

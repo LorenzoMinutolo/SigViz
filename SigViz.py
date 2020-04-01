@@ -1,5 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_socketio import SocketIO, emit
+from DSP import DSP
 
 SECRET_KEY = 'A9Zr348j/3dX R~XHH!1mN]LWX/,?RT'
 
@@ -15,6 +16,7 @@ class plot_configuration(object):
         self.update_len = update_len
         self.refresh_rate = refresh_rate
 
+main_signal=DSP.DSP(32,32,1000)
 plot_config = plot_configuration(5, 5, 10, 0.1)
 
 from routes import *

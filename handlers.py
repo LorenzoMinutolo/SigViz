@@ -3,7 +3,7 @@ import os
 import time
 import numpy as np
 from flask_socketio import emit
-from SigViz import socketio, plot_config
+from SigViz import socketio, plot_config, main_signal
 from threading import Thread
 
 
@@ -39,6 +39,13 @@ def tester(msg, methods=['GET', 'POST']):
     measures_handler.deamon = True
     measures_handler.start()
     measures_handler.join()
+
+@socketio.on('get_triangle')
+def get_triangle(msg, methods=['GET', 'POST']):
+    print("\t\t\tupdating")
+    x=main_signal.get_triangle(0,1000,100)
+    socketio.emit('triangle_data', json.dumps(x))
+
 
 @socketio.on('request_config')
 def request_config(msg):
