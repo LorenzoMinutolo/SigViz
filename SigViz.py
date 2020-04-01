@@ -16,7 +16,7 @@ class plot_configuration(object):
         self.update_len = update_len
         self.refresh_rate = refresh_rate
 
-main_signal=DSP.DSP(32,32,1000)
+main_signal=DSP(32,32,1000)
 plot_config = plot_configuration(5, 5, 10, 0.1)
 
 from routes import *

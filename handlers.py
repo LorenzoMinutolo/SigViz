@@ -43,8 +43,8 @@ def tester(msg, methods=['GET', 'POST']):
 @socketio.on('get_triangle')
 def get_triangle(msg, methods=['GET', 'POST']):
     print("\t\t\tupdating")
-    x=main_signal.get_triangle(0,1000,100)
-    socketio.emit('triangle_data', json.dumps(x))
+    x=main_signal.get_triangle(100,120,100)
+    socketio.emit('triangle_data', json.dumps(x.tolist()))
 
 
 @socketio.on('request_config')

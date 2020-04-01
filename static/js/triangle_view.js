@@ -2,8 +2,8 @@
 var total_height = 1000.;
 var total_width = 1000.;
 
-var total_step_x = 20.;
-var total_step_y = 20.;
+var total_step_x = 32.;
+var total_step_y = 32.;
 
 var border_size = 10
 // index to triangle 2d index
@@ -15,7 +15,9 @@ var triangle_step_x = (total_width)/total_step_x;
 var triangle_step_y = (total_height)/total_step_y
 
 
-var color_scale = chroma.scale(['black', 'red']);
+// var color_scale = chroma.scale(['black','red','blue','yellow']);
+var color_scale = chroma.scale(['yellow', '008ae5']);
+
 
 var svgContainer = d3.select("div#triangle_viewer")
  .append("div")
@@ -78,7 +80,7 @@ function make_triangleA(x,y){
   return polA
 }
 function xy2n(x,y){
-  return x*total_step_y + y;
+  return x + (total_step_y)*y;
 }
 function make_triangleB(x,y){
   var polB = svgContainer.append("path")
@@ -102,6 +104,7 @@ function make_triangleB(x,y){
 
 for(var y = 0; y<total_step_y; y++){
   for(var x = 0; x<total_step_x; x++){
+    // console.log(x,y,xy2n(x,y))
     triangle_pos.push({'x':x,'y':y, 'polA':make_triangleA(x,y), 'polB':make_triangleB(x,y)})
   }
 }
@@ -111,25 +114,32 @@ for(var y = 0; y<total_step_y; y++){
     xxx.push(parseFloat(100+x*y)/(total_step_x*total_step_y))
   }
 }
+
 function update_colors(arr){
-  color_arr = (arr.map(color_scale)).map(x => x.hex());
-  for(var y = 0; y<total_step_y; y++){
-    for(var x = 0; x<total_step_x; x++){
-      var index = xy2n(x,y)
-      // console.log(index)
-      triangle_pos[index]['polA'].attr("fill", color_arr[index])
-      triangle_pos[index]['polB'].attr("fill", color_arr[index])
-    }
-  }
+  arr.forEach((item_x, i) => {
+    item_x.forEach((item_y, j) => {
+      var colA = color_scale(item_y[0])
+      var colB = color_scale(item_y[1])
+      // console.log(item_y[1])
+      var index = xy2n(i,j)
+      triangle_pos[index]['polA'].attr("fill", colA);
+      triangle_pos[index]['polB'].attr("fill", colB)
+    });
+  });
+
 }
-update_colors(xxx)
+// update_colors(xxx)
 
-
+docReady(function(){
+  socket.emit('get_triangle', {})
+})
 
 socket.on( 'triangle_data', function( msg ) {
   console.log("Received plot configurations...")
   msg_json = JSON.parse(msg)
-  
+  update_colors(msg_json)
+  // setTimeout(() => {  socket.emit('get_triangle', {}) }, 100);
   socket.emit('get_triangle', {})
+
 
 });
