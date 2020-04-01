@@ -6,6 +6,7 @@ var total_step_x = 4;
 var total_step_y = 4;
 
 
+
 var svgContainer = d3.select("div#triangle_viewer")
  .append("div")
  // Container class to make it responsive.
@@ -17,10 +18,9 @@ var svgContainer = d3.select("div#triangle_viewer")
  // Class to make it responsive.
  .classed("svg-content-responsive", true)
 
-var stuff=svgContainer.append("polyline")
-  .classed("polyline", true)
-  .attr("points","0 0, 900 900, 500 500")
-  .attr("fill", "green")
-  .attr("stroke-width", 5)
-  .attr("stroke", "white")
-  .attr("transform", "translate(" + 0+ " "+ 0+")")
+
+function svgContainer.append("path")
+      .attr("d", " M 10 25 L 10 75 L 60 75 L 10 25")
+      .attr("stroke", "red")
+      .attr("stroke-width", 2)
+      .attr("fill", "white")
