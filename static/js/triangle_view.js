@@ -18,6 +18,17 @@ var triangle_step_y = (total_height)/total_step_y
 // var color_scale = chroma.scale(['black','red','blue','yellow']);
 var color_scale = chroma.scale(['yellow', '008ae5']);
 
+function set_viridis_colorscale(){
+  color_scale = chroma.scale(['yellow', '008ae5']);
+}
+
+function set_jet_colorscale(){
+  color_scale = chroma.scale(['black', 'red', 'yellow']);
+}
+
+function set_bw_colorscale(){
+  color_scale = chroma.scale(['black', 'white']);
+}
 
 var svgContainer = d3.select("div#triangle_viewer")
  .append("div")
@@ -69,9 +80,9 @@ function make_triangleA(x,y){
         .attr("transform", make_tanslate(x, y))
   polA.on("click", function(){
 
-    svgContainer.selectAll("path")
-      .attr("stroke", "white")
-      .lower()
+    // svgContainer.selectAll("path")
+    //   .attr("stroke", "white")
+    //   .lower()
     polA.raise();
     // selected_tile = Array(0);
     // selected_tile.push(rect.attr("id"))
@@ -91,9 +102,9 @@ function make_triangleB(x,y){
         .attr("fill", "green")
         .attr("transform", make_tanslate(x, y))
   polB.on("click", function(){
-    svgContainer.selectAll("path")
-      .attr("stroke", "white")
-      .lower()
+    // svgContainer.selectAll("path")
+    //   .attr("stroke", "white")
+    //   .lower()
     polB.raise();
     // selected_tile = Array(0);
     // selected_tile.push(rect.attr("id"))

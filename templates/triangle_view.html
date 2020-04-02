@@ -38,11 +38,87 @@
 
   <div id="collapse-plotter" class="panel-collapse collapse">
     <div class="panel-body">
-      all my options
+      <div style="width: 100%; display: table;">
+        <div style="display: table-row" >
+
+          <div style="width: 30%; display: table-cell; padding:10px;">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                   <b>Colorscale</b>
+                </h4>
+              </div>
+              <div class="panel-body" ">
+                <div style="text-align: left;">
+                  Change the color scheme
+                  <div class="radio">
+                    <label><input type="radio" name="optradio" checked onclick="set_viridis_colorscale()">Matlab style</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" name="optradio" onclick="set_jet_colorscale()">Jet</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" name="optradio" onclick="set_bw_colorscale()">Black and white</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div style="width: 30%; display: table-cell; padding:10px;">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                   <b>Frequency options</b>
+                </h4>
+              </div>
+              <div class="panel-body" ">
+                <div style="text-align: left;">
+                  Change integration frequency over each detector's signal.<br>
+                  <!-- <input id="ex16b" type="text"/><br/> -->
+                  <label data-toggle="tooltip" title="starting frequency in Hz for integration" style="margin: 10px"> Start frequency </label>
+                  <input style = "width: 20%; clear: both; margin-bottom:10px;" type="text" name="min_freq" value="1", id = 'freq_min_integ'><br>
+                  <label data-toggle="tooltip" title="ending frequency in Hz for integration" style="margin: 10px"> End frequency </label>
+                  <input style = "width: 20%; clear: both; margin-bottom:10px;" type="text" name="max_freq" value="100", id = 'freq_max_integ'>
+                  <button type="submit" class="btn btn-success btn-default" onclick="enqueue_all_jobs()" style="float: right">Set</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="width: 30%; display: table-cell; padding:10px;">
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                   <b>Color calculation</b>
+                </h4>
+              </div>
+              <div class="panel-body" ">
+                <div style="text-align: left;">
+                  Choose what operation is performed on the selected bandwidth
+                  <div class="radio">
+                    <label><input type="radio" name="optradio" checked>Max</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" name="optradio">Mean</label>
+                  </div>
+                  <div class="radio">
+                    <label><input type="radio" name="optradio" disabled>Frequency of max</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<div id="triangle_viewer">
+
+<div id="triangle_viewer" style="margin-bottom: 20px">
 
 </div>
 
