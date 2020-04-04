@@ -30,6 +30,9 @@ Array.prototype.remove = function() {
     return this;
 };
 
+
+// var menu = contextMenu().items('Add signals...', 'Select row', 'Select col', 'Reset selection');
+
 function set_viridis_colorscale(){
   color_scale = chroma.scale(['yellow', '008ae5']);
 }
@@ -98,6 +101,28 @@ function format_tooltip(x,y,pol){
 }
 function make_triangleA(x,y){
   var t_name = triangle_xy2string(x,y,"A");
+  var menu = [
+  	{
+  		title: 'Add signal...',
+  		action: function() {
+  		}
+  	},
+  	{
+  		title: 'Select row '+y,
+  		action: function() {
+  		}
+  	},
+    {
+  		title: 'Select col '+x,
+  		action: function() {
+  		}
+  	},
+    {
+  		title: 'Reset selection',
+  		action: function() {
+  		}
+  	}
+  ]
   var polA = svgContainer.append("path")
         // .attr("d", " M 10 25 L 10 75 L 60 75 L 10 25")
         .attr("d", make_triangle_position_polA(0, 0))
@@ -122,6 +147,7 @@ function make_triangleA(x,y){
           }
           return tooltip.style("visibility", "hidden");
         })
+
   polA.on("click", function(){
     // console.log(selected_triangle);
     if(selected_triangle.includes(t_name)){
@@ -143,9 +169,38 @@ function make_triangleA(x,y){
     // selected_tile.push(rect.attr("id"))
 
   })
+  polA.on('contextmenu', d3.contextMenu(menu,{
+    onOpen: function (data, index) {
+          polA.raise();
+          selected_triangle.push(t_name);
+          polA.attr("stroke", "black");
+				}
+  }));
   return polA
 }
 function make_triangleB(x,y){
+  var menu = [
+    {
+      title: 'Add signal...',
+      action: function() {
+      }
+    },
+    {
+      title: 'Select row '+y,
+      action: function() {
+      }
+    },
+    {
+      title: 'Select col '+x,
+      action: function() {
+      }
+    },
+    {
+      title: 'Reset selection',
+      action: function() {
+      }
+    }
+  ]
   var t_name = triangle_xy2string(x,y,"B");
   var polB = svgContainer.append("path")
         // .attr("d", " M 10 25 L 10 75 L 60 75 L 10 25")
@@ -185,6 +240,13 @@ function make_triangleB(x,y){
       return polB.attr("stroke", "black");
     }
   })
+  polB.on('contextmenu', d3.contextMenu(menu,{
+    onOpen: function (data, index) {
+          polB.raise();
+          selected_triangle.push(t_name);
+          polB.attr("stroke", "black");
+				}
+  }));
   return polB
 }
 
