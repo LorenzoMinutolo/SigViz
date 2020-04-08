@@ -1,5 +1,5 @@
 import numpy as np
-
+import ba40_ModuleMapping as bamm
 import matplotlib.pyplot as pl
 
 class DSP(object):
@@ -57,15 +57,25 @@ class DSP(object):
 
         #break a bunch of cols
         power_spect[7:9,:]*=0
-
         power_spect[12:13,:]*=0
-
-
-
-
 
         # print(np.shape(power_spect))
         return power_spect
+
+    def get_signal(self, one_target, samples):
+        data_x=[]
+        data_y=[]
+        self.gen_signal(samples)
+        for i in range (len(detcol)):
+            data_x.append(list(range(len(detcol))))
+            data_y.append(self.signal[detcol[i], detrow[i], detpol[i], 0:samples])
+
+        select_det_signal = {
+          'data_x': data_x,
+          'data_y': data_y
+        }
+
+        return select_det_signal
 
     def gen_signal(self, length):
         '''

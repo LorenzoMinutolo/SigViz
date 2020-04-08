@@ -5,6 +5,7 @@ import numpy as np
 from flask_socketio import emit
 from SigViz import socketio, plot_config, main_signal
 from threading import Thread
+from SigViz import main_signal
 
 
 # shared_var_manager = Manager()
@@ -45,6 +46,13 @@ def get_triangle(msg, methods=['GET', 'POST']):
     print("\t\t\tupdating")
     x=main_signal.get_triangle(100,120,100)
     socketio.emit('triangle_data', json.dumps(x.tolist()))
+
+# msg={'detectors':{'data_x':..,'data_y':..}}
+@socketio.on('get_signal')
+def get_signal(msg, methods=['GET', 'POST']):
+    print("\t\t\tupdating")
+    x=main_signal.get_signal(msg['target'], samples=100)
+    socketio.emit('detectors_data', json.dumps(x))
 
 
 @socketio.on('request_config')

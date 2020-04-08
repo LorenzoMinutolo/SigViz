@@ -8,7 +8,9 @@ def index():
 
 @app.route("/plotter",  methods=['GET', 'POST'])
 def plotter():
-    return render_template('plotter.html', name = "Plotter", ocd = 100)
+    plot_x=3
+    plot_y=3
+    return render_template('plotter.html', name = "Plotter", plot_x=plot_x, plot_y=plot_y)
 
 @app.route("/triangle_view",  methods=['GET', 'POST'])
 @app.route("/triangle_view/<num>",  methods=['GET', 'POST'])
