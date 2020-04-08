@@ -122,6 +122,33 @@
 
 </div>
 
+<div class="modal fade" id="modal_plot_select" role="dialog">
+  <div class="modal-dialog" style = "width: auto; max-width: 960px;">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="padding:20px 20px;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4><span class="glyphicon glyphicon-picture"></span> Available plot modes</h4>
+      </div>
+      <div class="modal-body" style="padding:40px 50px; ">
+        <center>radio group with selectable signals</center>
+        <!-- <table id="plot_select_table" class="table" style="width:95%">
+          <thead>
+            <tr>
+              <th>Plot</th>
+              <th>Kind</th>
+              <th>Generated</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table> -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- focal plane code -->
 <script type="text/javascript" src={{ url_for('static', filename = 'js/triangle_view.js') }}></script>
 

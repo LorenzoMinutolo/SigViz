@@ -140,8 +140,7 @@ function make_triangleA(x,y){
   var menu = [
   	{
   		title: 'Add signal...',
-  		action: function() {
-  		}
+  		action: function(d, i) {$("#modal_plot_select").modal('show')}
   	},
   	{
   		title: 'Select row '+y+' pol A',
@@ -215,8 +214,7 @@ function make_triangleB(x,y){
   var menu = [
     {
       title: 'Add signal...',
-      action: function() {
-      }
+      action: function(d, i) {$("#modal_plot_select").modal('show')}
     },
     {
       title: 'Select row '+y+' pol B',

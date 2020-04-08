@@ -57,8 +57,8 @@ function configure_plots_signal(c, r, grid){
    layout = {};
  }
   plot_counter = Array.from(Array(n_plots).keys());
-  Plotly.purge('main_plot');
-  Plotly.newPlot('main_plot', data, layout, {staticPlot: true});
+  Plotly.purge('plotter_div');
+  Plotly.newPlot('plotter_div', data, layout, {staticPlot: true});
 }
 
 
@@ -66,7 +66,7 @@ function configure_plots_signal(c, r, grid){
 //Plotly.newPlot('plotter_div', data_trial, layout);
 //for now select_signal gives just one mode
 var select_signal={
-'target':[[1,2,3],[0,1,2],[1,0,1]]] //'target':[[detcol],[detrow],[detpol]]]
+'target':[[1,2,3],[0,1,2],[1,0,1]], //'target':[[detcol],[detrow],[detpol]]]
 'mode':['ts']  //ts=timestream
 }
 
