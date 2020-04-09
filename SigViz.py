@@ -17,7 +17,7 @@ class plot_configuration(object):
         self.refresh_rate = refresh_rate
 
 main_signal=DSP(32,32,1000)
-plot_config = plot_configuration(5, 5, 10, 0.1)
+plot_config = plot_configuration(2, 2, 10, 0.1)
 
 from routes import *
 

@@ -50,3 +50,7 @@ flask_session
 
 
 Test.py
+
+BA1_data
+
+*.pyc

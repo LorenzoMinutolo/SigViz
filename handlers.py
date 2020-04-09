@@ -32,6 +32,7 @@ def web_data_streamer(target_socketio, configurations):
         time.sleep(configurations.refresh_rate)
 
 
+
 @socketio.on('start_streaming')
 def tester(msg, methods=['GET', 'POST']):
     print("\t\t\treceived")
@@ -51,8 +52,8 @@ def get_triangle(msg, methods=['GET', 'POST']):
 @socketio.on('get_signal')
 def get_signal(msg, methods=['GET', 'POST']):
     print("\t\t\tupdating")
-    x=main_signal.get_signal(msg['target'], samples=100)
-    socketio.emit('detectors_data', json.dumps(x))
+    x=main_signal.get_signal(msg['target'], samples=50)
+    socketio.emit('detectors_data',json.dumps(x))
 
 
 @socketio.on('request_config')
