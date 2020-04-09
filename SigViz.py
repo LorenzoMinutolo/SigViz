@@ -15,9 +15,10 @@ class plot_configuration(object):
         self.cols = cols
         self.update_len = update_len
         self.refresh_rate = refresh_rate
+        print("n_cols="+str(self.cols)+", n_rows ="+str(self.rows))
 
 main_signal=DSP(32,32,1000)
-plot_config = plot_configuration(2, 2, 10, 0.1)
+plot_config = plot_configuration(3, 4, 10, 0.1)
 
 from routes import *
 

@@ -1,88 +1,58 @@
 
-var n_cols = 2
-var n_rows = 2
-var n_plots = n_cols * n_rows
 var max_number_point = 10000
-var plot_counter = Array.from(Array(n_plots).keys());
-var grid_signal = 1
-
-//var data_trial = [trace1, trace2, trace3, trace4];
-
-var layout = {
-  grid: {rows: n_rows, columns: n_cols, pattern: 'independent'},
-};
-
-//var test_data = {
-//  'data_x':[[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]],
-//  'data_y':[[1,2,3,4],[1,2,3,4],[1,2,3,4],[1,2,3,4]]
-//}
 
 
-function configure_plots_signal(c, r, grid){
+//var layout = {
+//  grid: {rows: n_rows, columns: n_cols, pattern: 'independent'},
+//};
+
+
+
+function configure_plots_signal(c, r){
   n_cols = parseInt(c)
   n_rows = parseInt(r)
   n_plots = n_cols * n_rows
+  //var plot_counter = Array.from(Array(n_plots).keys());
   console.log(n_plots,n_cols,n_rows)
   data = []
 
-  if(grid){
-    for (var i = 0; i < n_cols; i++) {
-      for (var j = 0; j < n_rows; j++) {
-        data.push({
-          x: [],
-          y: [],
-          xaxis: 'x'+(j+1),
-          yaxis: 'y'+(i+1),
-          type: 'scattergl', //pointcloud could be better
-          mode: 'markers',
-          hoverinfo:'skip'
-        });
-      }
-    }
-    layout = {
-      grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}},
-      showlegend: false,
 
-    };
- }else{
-   for (var i = 0; i < n_cols; i++) {
-     for (var j = 0; j < n_rows; j++) {
-       data.push({
-         x: [],
-         y: [],
-         type: 'scattergl',
-         hoverinfo:'skip'
-       });
-     }
-   }
-   layout = {};
- }
+  for (var i = 0; i < n_cols; i++) {
+    for (var j = 0; j < n_rows; j++) {
+      data.push({
+        x: [],
+        y: [],
+        xaxis: 'x'+(i+1),
+        yaxis: 'y'+(j+1),
+        type: 'scattergl', //pointcloud could be better
+        mode: 'markers',
+        hoverinfo:'skip'
+      });
+    }
+  }
+  layout = {
+  grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}},
+  showlegend: false,
+  }
   plot_counter = Array.from(Array(n_plots).keys());
   Plotly.purge('plotter_div');
   Plotly.newPlot('plotter_div', data, layout, {staticPlot: true});
+  return plot_counter;
 }
 
 
-//var sig = main_signal.get_signal([10,11,12,13],[11,12,13,14],[0,1,1,0])
-//Plotly.newPlot('plotter_div', data_trial, layout);
 //for now select_signal gives just one mode
 var select_signal={
-'target':[[1,2,3,4],[0,1,2,4],[1,0,1,1]], //'target':[[detcol],[detrow],[detpol]]]
+'target':[[1,2,3,4,5,6,7,8,9,10,11,12],[1,2,3,4,5,6,7,8,9,10,11,12],[1,0,1,1,1,0,1,1,1,0,1,1]], //'target':[[detcol],[detrow],[detpol]]]
 'mode':['ts']  //ts=timestream
 }
 
-
-//configure_plots_signal(n_cols, n_rows, 1);
-
-//docReady(
-  //socket.emit('get_signal', select_signal)
-//);
 
 
 socket.on( 'config_plots', function( msg ) {
   console.log("Received plot configurations...")
   msg_json = JSON.parse(msg)
-  configure_plots_signal(msg_json['cols'], msg_json['rows'], grid_signal)
+  plot_counter = configure_plots_signal(msg_json['cols'], msg_json['rows'])
   socket.emit('get_signal', select_signal)
 
 });
