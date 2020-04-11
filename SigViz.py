@@ -21,7 +21,7 @@ class plot_configuration(object):
         self.traces[0] = 'lines'
         print("n_cols="+str(self.cols)+", n_rows ="+str(self.rows))
 
-main_signal=DSP(32,32,1000)
+main_signal=DSP(16,16,1000)
 plot_config = plot_configuration(5, 2, 10, 0.1)
 print("Fatigoni...WTF?")
 

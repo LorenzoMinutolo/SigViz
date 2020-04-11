@@ -278,13 +278,23 @@ function make_triangleB(x,y){
   return polB
 }
 
-for(var y = 0; y<total_step_y; y++){
-  for(var x = 0; x<total_step_x; x++){
-    // console.log(x,y,xy2n(x,y))
-    triangle_pos.push({'x':x,'y':y, 'A':make_triangleA(x,y), 'B':make_triangleB(x,y)})
-  }
-}
 
+socket.on( 'triangle_config', function( msg ) {
+  msg_json = JSON.parse(msg)
+  total_step_x = parseInt(msg_json.ncols);
+  total_step_y = parseInt(msg_json.nrows);
+  triangle_size_x = (total_width - total_step_x*border_size)/total_step_x;
+  triangle_size_y = (total_height - total_step_y*border_size)/total_step_y;
+  triangle_step_x = (total_width)/total_step_x;
+  triangle_step_y = (total_height)/total_step_y;
+  for(var y = 0; y<total_step_y; y++){
+    for(var x = 0; x<total_step_x; x++){
+      // console.log(x,y,xy2n(x,y))
+      triangle_pos.push({'x':x,'y':y, 'A':make_triangleA(x,y), 'B':make_triangleB(x,y)})
+    }
+  }
+  socket.emit('get_triangle', {})
+});
 
 function update_colors(arr){
   arr.forEach((item_x, i) => {
@@ -301,7 +311,7 @@ function update_colors(arr){
 }
 
 docReady(function(){
-  socket.emit('get_triangle', {})
+  socket.emit('get_triangle_config', {})
 })
 
 socket.on( 'triangle_data', function( msg ) {
@@ -321,3 +331,32 @@ var tooltip = d3.select("div#triangle_viewer")
   .style("padding", "10px")
   .style("opacity", "0.8")
 	.style("visibility", "hidden")
+
+
+function set_plotting_mode_ts(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> Each selected detector timestream will be dispayed as a trace in the plot.")
+}
+
+function set_plotting_mode_ats(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> All selected detercor's timestream will be averaged in a single trace in the plot")
+}
+
+function set_plotting_mode_ps(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> Each detector timestream power spectra will be dispayed as a trace in the plot.")
+}
+
+function set_plotting_mode_aps(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> All selected detercor's timestream power spectra will be averaged in a single trace in the plot.")
+}
+
+function set_plotting_mode_pd(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> Each trace in the plot will be the difference of two polarization timestrams per each selected detector pair.")
+}
+
+function set_plotting_mode_apd(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> All selected detercor's pair difference timestream will be averaged in a single trace in the plot")
+}
+
+function set_plotting_mode_pds(){
+  $("#mode_descriptor").html("<b>Plotting mode description: </b> Each trace in the plot will be the power spectrum of the difference of two polarization timestrams per each selected detector pair.")
+}

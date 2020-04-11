@@ -131,7 +131,38 @@
         <h4><span class="glyphicon glyphicon-picture"></span> Available plot modes</h4>
       </div>
       <div class="modal-body" style="padding:40px 50px; ">
-        <center>radio group with selectable signals</center>
+        <center>Choose the operation type. Clicking the add button will add a single plot in the plotter view page eventually with many traces.</center>
+        <div style="width: 100%; display: table;">
+          <div style="display: table-row" >
+        <div style="text-align: left; width: 30%; display: table-cell;;">
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ts()" checked>Timestreams</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ats()">Averaged timestrams</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ps()" >Power spectra</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_aps()" >Averaged power spectrum</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_pd()" >Pair difference</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_apd()" >Averaged pair difference</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_pds()" >Pair difference spectrum</label>
+          </div>
+
+        </div>
+        <div style="text-align: left; width: 70%; display: table-cell;" id="mode_descriptor">
+          <b>Plotting mode description: </b>Each selected detector timestream will be dispayed as a trace in the plot.
+        </div>
+        </div>
+        </div>
         <!-- <table id="plot_select_table" class="table" style="width:95%">
           <thead>
             <tr>
@@ -144,6 +175,10 @@
           <tbody>
           </tbody>
         </table> -->
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success btn-default" onclick=""><span class="glyphicon glyphicon-plus"></span> Add</button>
+        <button type="submit" class="btn btn-danger btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
       </div>
     </div>
   </div>

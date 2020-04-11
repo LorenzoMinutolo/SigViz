@@ -48,6 +48,11 @@ def get_triangle(msg, methods=['GET', 'POST']):
     x=main_signal.get_triangle(100,120,100)
     socketio.emit('triangle_data', json.dumps(x.tolist()))
 
+@socketio.on('get_triangle_config')
+def get_triangle(msg, methods=['GET', 'POST']):
+    print("\t\t\tEmitting triangle configuration: cols: %d, rows: %d"%(main_signal.Nx,main_signal.Ny))
+    socketio.emit('triangle_config', json.dumps({'ncols':main_signal.Nx,'nrows':main_signal.Ny}))
+
 # msg={'detectors':{'data_x':..,'data_y':..}}
 @socketio.on('get_signal')
 def get_signal(msg, methods=['GET', 'POST']):
