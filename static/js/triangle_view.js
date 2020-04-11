@@ -16,6 +16,8 @@ var triangle_step_y = (total_height)/total_step_y
 
 var selected_triangle = Array(0);
 var selected_signal = Array(0)
+
+var triangle_sig_mode = 0 //mode=0 for Bias; mode=else for signal
 // in the form of {
 //   "entity": timestream fft average std and so on,
 //   "target": [{'x':n,'y'n}]
@@ -293,7 +295,7 @@ socket.on( 'triangle_config', function( msg ) {
       triangle_pos.push({'x':x,'y':y, 'A':make_triangleA(x,y), 'B':make_triangleB(x,y)})
     }
   }
-  socket.emit('get_triangle', {})
+  socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
 });
 
 function update_colors(arr){
@@ -319,7 +321,7 @@ socket.on( 'triangle_data', function( msg ) {
   msg_json = JSON.parse(msg)
   update_colors(msg_json)
   // setTimeout(() => {  socket.emit('get_triangle', {}) }, 100);
-  socket.emit('get_triangle', {})
+  socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
 });
 
 var tooltip = d3.select("div#triangle_viewer")

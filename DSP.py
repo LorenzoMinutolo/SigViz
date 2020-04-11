@@ -31,7 +31,7 @@ class DSP(object):
         self.dummycounter=0
         #print(self.signal)
 
-    def get_triangle(self, f_low, f_high, lenght, rand=True):
+    def get_triangle(self, f_low, f_high, lenght, mode, rand=True):
         '''
         Return NX x NY x 2 tensor in 0 - 1 interval
         '''
@@ -72,9 +72,12 @@ class DSP(object):
         power_spect[7:9,:]*=0
         power_spect[12:13,:]*=0
 
-        return power_spect
-        #bias_triangle=self.bias
-        #return bias_triangle
+        print("mode=", mode)
+        if mode == 0:
+            return (self.bias-self.bias.min())/(self.bias-self.bias.min()).max()
+        else:
+            return power_spect
+
 
     def get_signal(self, one_target, mode, samples):
         select_det_signal = {
