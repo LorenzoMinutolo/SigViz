@@ -21,7 +21,8 @@ class DSP(object):
         self.Nx = NX
         self.Ny = NY
         self.signal = np.zeros((self.Nx, self.Ny, 2, inner_length))
-
+        self.bias=np.zeros((self.Nx, self.Ny, 2))
+        #self.time_ax=np.zeros(inner_length)
         #Glitch simulator
         self.deleteme_counter = 0
         self.deleteme_flag = True
@@ -35,10 +36,12 @@ class DSP(object):
         Return NX x NY x 2 tensor in 0 - 1 interval
         '''
         datapath = '/Users/sofi/Desktop/SigViz/BA1_data/20191015/Conf_1_Biascan_lightdark_Sine_Vpp_1.0_Voffset_0.0_V_Freq_0.5_Hz_trial_2_bias1'
+        time_ax=np.linspace(self.dummycounter, self.dummycounter+lenght, lenght, endpoint=False).tolist()
         if rand:
-            self.gen_signal(lenght)
+            self.gen_signal(lenght, time_ax)
         else:
             self.read_mce_signal(lenght, datapath)
+        self.dummycounter+=lenght
 
         signal_FT = np.fft.rfft(self.signal, axis = 3)
         # [pl.plot(signal_FT[i,0,0]) for i in range(5)]
@@ -69,40 +72,72 @@ class DSP(object):
         power_spect[7:9,:]*=0
         power_spect[12:13,:]*=0
 
-        # print(np.shape(power_spect))
         return power_spect
+        #bias_triangle=self.bias
+        #return bias_triangle
 
-    def get_signal(self, one_target, samples):
+    def get_signal(self, one_target, mode, samples):
+        select_det_signal = {
+        'data_x': [],
+        'data_y': []
+        }
         data_x=[]
         data_y=[]
+        data_y_FT=[]
         detcol = one_target[0]
         detrow = one_target[1]
         detpol = one_target[2]
-        self.gen_signal(samples)
         time_ax=np.linspace(self.dummycounter, self.dummycounter+samples, samples, endpoint=False).tolist()
+        self.gen_signal(samples, time_ax)
 
         for i in range (len(detcol)):
             data_x.append(time_ax)
             data_y.append(self.signal[detcol[i], detrow[i], detpol[i], 0:samples].tolist())
+            print('data_x=',data_x)
+            print('data_y=',data_y)
+
+            if mode[0]=='ps':
+                data_y_FT.append(np.fft.rfft(self.signal[detcol[i], detrow[i], detpol[i], 0:samples]))
+                print('data_y_FT=',data_y)
+
+        if mode[0]=='ps':
+            power_spect=(np.abs(data_y_FT)**2).tolist()
+            #power_spect= (power_spect/np.max(power_spect)).tolist()
+            print(len(data_x))
+            print(len(power_spect))
+
 
         self.dummycounter+=samples
 
-        select_det_signal = {
-          'data_x': data_x,
-          'data_y': data_y
-        }
+        if mode[0]=='ts':
+            select_det_signal = {
+            'data_x': data_x,
+            'data_y': data_y
+            }
+        elif mode[0]=='ps':
+            select_det_signal = {
+            'data_x': data_x,
+            'data_y': power_spect
+            }
+
         #print(select_det_signal)
         time.sleep(0.25)
         return select_det_signal
 
-    def gen_signal(self, length):
+
+    def gen_signal(self, length, time_ax):
         '''
         Generate signal for length time interval.
         '''
         signal=np.random.normal(10, 1, size=(self.Nx, self.Ny, 2, length))
+        glitch_freq=random.uniform(0.005,1)
+        glitch=np.sin(glitch_freq*np.asarray(time_ax))
+        signal_wglitch=signal#+glitch
 
         self.signal = np.roll(self.signal, shift=length, axis = 3)
-        self.signal[:,:,:,0:length] = signal
+        self.signal[:,:,:,0:length] = signal_wglitch
+
+        self.bias=np.random.randint(200, 250, size=(self.Nx, self.Ny, 2)) #then will be read from .run file
         #print(self.signal[:,:,:,0:length])
         #print(self.signal[:,:,:,length:2*length])
 

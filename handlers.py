@@ -52,10 +52,10 @@ def get_triangle(msg, methods=['GET', 'POST']):
 @socketio.on('get_signal')
 def get_signal(msg, methods=['GET', 'POST']):
     print("\t\t\tupdating")
-    x=main_signal.get_signal(msg['target'], samples=50)
+    x=main_signal.get_signal(msg['target'],msg['mode'], samples=50)
     socketio.emit('detectors_data',json.dumps(x))
 
 
 @socketio.on('request_config')
 def request_config(msg):
-    socketio.emit('config_plots',json.dumps({'cols':plot_config.rows,'rows':plot_config.cols}))
+    socketio.emit('config_plots',json.dumps({'cols':plot_config.cols,'rows':plot_config.rows,'traces':plot_config.traces}))

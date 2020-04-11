@@ -1,14 +1,11 @@
 
 var max_number_point = 10000
 
-
 //var layout = {
 //  grid: {rows: n_rows, columns: n_cols, pattern: 'independent'},
 //};
 
-
-
-function configure_plots_signal(c, r){
+function configure_plots_signal(c, r, traces){
   n_cols = parseInt(c)
   n_rows = parseInt(r)
   n_plots = n_cols * n_rows
@@ -17,15 +14,17 @@ function configure_plots_signal(c, r){
   data = []
 
 
+
   for (var i = 0; i < n_cols; i++) {
     for (var j = 0; j < n_rows; j++) {
+      console.log("Adding plot with trace: "+traces[i*n_cols +j])
       data.push({
         x: [],
         y: [],
         xaxis: 'x'+(i+1),
         yaxis: 'y'+(j+1),
         type: 'scattergl', //pointcloud could be better
-        mode: 'markers',
+        mode: traces[i*n_cols +j],
         hoverinfo:'skip'
       });
     }
@@ -43,8 +42,9 @@ function configure_plots_signal(c, r){
 
 //for now select_signal gives just one mode
 var select_signal={
-'target':[[1,2,3,4,5,6,7,8,9,10,11,12],[1,2,3,4,5,6,7,8,9,10,11,12],[1,0,1,1,1,0,1,1,1,0,1,1]], //'target':[[detcol],[detrow],[detpol]]]
-'mode':['ts']  //ts=timestream
+'target':[[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,0,1,1,1,1,0,1,1,1]], //'target':[[detcol],[detrow],[detpol]]]
+'trace':['markers','markers','markers','lines'], //Describe what's the plotting mode of the traces
+'mode':['ts']  //ts=timestream; ps=powerspectrum --> leave as ts for now
 }
 
 
@@ -52,7 +52,7 @@ var select_signal={
 socket.on( 'config_plots', function( msg ) {
   console.log("Received plot configurations...")
   msg_json = JSON.parse(msg)
-  plot_counter = configure_plots_signal(msg_json['cols'], msg_json['rows'])
+  plot_counter = configure_plots_signal(msg_json['cols'], msg_json['rows'], msg_json['traces'])
   socket.emit('get_signal', select_signal)
 
 });
