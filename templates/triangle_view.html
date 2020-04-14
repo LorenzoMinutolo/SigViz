@@ -19,6 +19,15 @@
  }
 
 </style>
+
+<script>
+  // TODO: add configuration exchange before calling window.open()
+  function configure_plotter(){
+    window.open("{{ url_for('plotter') }}");
+  }
+
+</script>
+
 <div style="width: 100%">
   <center>
     <h2>
@@ -145,25 +154,25 @@
           <div style="display: table-row" >
         <div style="text-align: left; width: 30%; display: table-cell;">
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ts()" checked>Timestreams</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ts()" value="ts" checked>Timestreams</label>
           </div>
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ats()">Averaged timestrams</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ats()" value="ats">Averaged timestrams</label>
           </div>
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ps()" >Power spectra</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_ps()" value="ps" >Power spectra</label>
           </div>
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_aps()" >Averaged power spectrum</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_aps()" value="aps" >Averaged power spectrum</label>
           </div>
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_pd()" >Pair difference</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_pd()" value="pd" >Pair difference</label>
           </div>
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_apd()" >Averaged pair difference</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_apd()" value="apd" >Averaged pair difference</label>
           </div>
           <div class="radio">
-            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_pds()" >Pair difference spectrum</label>
+            <label><input type="radio" name="mode_sel" onclick="set_plotting_mode_pds()" value="pds" >Pair difference spectrum</label>
           </div>
 
         </div>
@@ -172,28 +181,50 @@
         </div>
         </div>
         </div>
-        <!-- <table id="plot_select_table" class="table" style="width:95%">
-          <thead>
-            <tr>
-              <th>Plot</th>
-              <th>Kind</th>
-              <th>Generated</th>
-              <th>Comment</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table> -->
+
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-success btn-default" onclick=""><span class="glyphicon glyphicon-plus"></span> Add</button>
+        <button type="submit" class="btn btn-success btn-default" onclick="add_signal()" data-dismiss="modal"><span class="glyphicon glyphicon-plus"></span> Add</button>
         <button type="submit" class="btn btn-danger btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- focal plane code -->
+<!-- plotter confirmarion window -->
+<div class="modal fade" id="modal_plot_launch" role="dialog">
+  <div class="modal-dialog" style = "width: auto; max-width: 960px;">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="padding:20px 20px;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4><span class="glyphicon glyphicon-picture"></span> Available plot modes</h4>
+      </div>
+      <div class="modal-body" style="padding:40px 50px; ">
+        <center>Check the signal before launching the plotter</center>
+
+        <table class="table" style="width:95%">
+          <thead>
+            <tr>
+              <th>Plot #</th>
+              <th>Kind</th>
+              <th>Signals</th>
+            </tr>
+          </thead>
+          <tbody id = "signal_selector_confirm_body">
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success btn-default" onclick="configure_plotter()"><span class="glyphicon glyphicon-ok"></span> Launch</button>
+        <button type="submit" class="btn btn-secondary" data-dismiss="modal" onclick="reset_all_signals()"><span class="glyphicon glyphicon-minus"></span> Reset</button>
+        <button type="submit" class="btn btn-danger btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Close </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- triangle view code -->
 <script type="text/javascript" src={{ url_for('static', filename = 'js/triangle_view.js') }}></script>
 
 {% endblock %}
