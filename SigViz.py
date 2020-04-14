@@ -1,14 +1,18 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_socketio import SocketIO, emit
 from DSP import DSP
+import logging
 
 SECRET_KEY = 'A9Zr348j/3dX R~XHH!1mN]LWX/,?RT'
 
 app = Flask(__name__)
 app.secret_key =SECRET_KEY
 
-socketio = SocketIO(app, async_mode='threading')
+# Disable websocket server logs
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
+socketio = SocketIO(app, async_mode='threading', logger = False)
 class plot_configuration(object):
     def __init__(self, rows, cols, update_len, refresh_rate):
         self.rows = rows

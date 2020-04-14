@@ -31,51 +31,54 @@ class DSP(object):
         self.dummycounter=0
         #print(self.signal)
 
-    def get_triangle(self, f_low, f_high, lenght, mode, rand=True):
+    def get_triangle(self, f_low, f_high, lenght, mode = "data", rand=True):
         '''
         Return NX x NY x 2 tensor in 0 - 1 interval
         '''
-        datapath = '/Users/sofi/Desktop/SigViz/BA1_data/20191015/Conf_1_Biascan_lightdark_Sine_Vpp_1.0_Voffset_0.0_V_Freq_0.5_Hz_trial_2_bias1'
-        time_ax=np.linspace(self.dummycounter, self.dummycounter+lenght, lenght, endpoint=False).tolist()
-        if rand:
-            self.gen_signal(lenght, time_ax)
-        else:
-            self.read_mce_signal(lenght, datapath)
-        self.dummycounter+=lenght
-
-        signal_FT = np.fft.rfft(self.signal, axis = 3)
-        # [pl.plot(signal_FT[i,0,0]) for i in range(5)]
-        # pl.show()
-        power_spect=np.sum((np.abs(signal_FT)[:,:,:,f_low:f_high]**2), axis=3)
-
-        #Normalize?
-        power_spect /= np.max(power_spect)
-
-        #shake up some rows
-        power_spect[:,17:21,:] += .4
-
-
-        self.deleteme_counter+=1
-
-        if self.deleteme_counter%100 < 92:
-            if self.deleteme_flag:
-                self.deleteme_glitch_pos = np.random.randint(0,32, size=4)
-                self.deleteme_flag = False
-            # print("Glitch at %d, %d - %d, %d" % (self.deleteme_glitch_pos[0],self.deleteme_glitch_pos[1],self.deleteme_glitch_pos[2],self.deleteme_glitch_pos[3]))
-            power_spect[self.deleteme_glitch_pos[0]:self.deleteme_glitch_pos[0]+6,self.deleteme_glitch_pos[2]:self.deleteme_glitch_pos[2]+3,:] += 0.45
-
-        else:
-            self.deleteme_flag = True
-
-
-        #break a bunch of cols
-        power_spect[7:9,:]*=0
-        power_spect[12:13,:]*=0
-
-        print("mode=", mode)
-        if mode == 0:
+        print("Returning triangle data. mode: %s" % mode)
+        if mode == "bias":
             return (self.bias-self.bias.min())/(self.bias-self.bias.min()).max()
         else:
+            datapath = '/Users/sofi/Desktop/SigViz/BA1_data/20191015/Conf_1_Biascan_lightdark_Sine_Vpp_1.0_Voffset_0.0_V_Freq_0.5_Hz_trial_2_bias1'
+            time_ax=np.linspace(self.dummycounter, self.dummycounter+lenght, lenght, endpoint=False).tolist()
+
+            # Here you are updating the data. This should go in gen_signal, not here.
+            # Generally I would keep the "get_" function indipendent from data generation. - LM
+            if rand:
+                self.gen_signal(lenght, time_ax)
+            else:
+                self.read_mce_signal(lenght, datapath)
+            self.dummycounter+=lenght
+
+            signal_FT = np.fft.rfft(self.signal, axis = 3)
+            # [pl.plot(signal_FT[i,0,0]) for i in range(5)]
+            # pl.show()
+            power_spect=np.sum((np.abs(signal_FT)[:,:,:,f_low:f_high]**2), axis=3)
+
+            #Normalize?
+            power_spect /= np.max(power_spect)
+
+            #shake up some rows
+            power_spect[:,17:21,:] += .4
+
+
+            self.deleteme_counter+=1
+
+            if self.deleteme_counter%100 < 92:
+                if self.deleteme_flag:
+                    self.deleteme_glitch_pos = np.random.randint(0,32, size=4)
+                    self.deleteme_flag = False
+                # print("Glitch at %d, %d - %d, %d" % (self.deleteme_glitch_pos[0],self.deleteme_glitch_pos[1],self.deleteme_glitch_pos[2],self.deleteme_glitch_pos[3]))
+                power_spect[self.deleteme_glitch_pos[0]:self.deleteme_glitch_pos[0]+6,self.deleteme_glitch_pos[2]:self.deleteme_glitch_pos[2]+3,:] += 0.45
+
+            else:
+                self.deleteme_flag = True
+
+
+            #break a bunch of cols
+            power_spect[7:9,:]*=0
+            power_spect[12:13,:]*=0
+
             return power_spect
 
 

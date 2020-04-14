@@ -17,11 +17,22 @@ var triangle_step_y = (total_height)/total_step_y
 var selected_triangle = Array(0);
 var selected_signal = Array(0)
 
-var triangle_sig_mode = 0 //mode=0 for Bias; mode=else for signal
+var triangle_sig_mode = "data" //mode=0 for Bias; mode=else for signal
 // in the form of {
 //   "entity": timestream fft average std and so on,
 //   "target": [{'x':n,'y'n}]
 // }
+
+// Function to change the plotting modes of triangles.
+// For now only bias and other are contemplated: there is distinction between the various data fcns
+function switch_triangle_mode_data(){
+  console.log("Switching to triangle mode: DATA")
+  triangle_sig_mode = "data"
+}
+function switch_triangle_mode_bias(){
+  console.log("Switching to triangle mode: BIAS")
+  triangle_sig_mode = "bias"
+}
 
 // var color_scale = chroma.scale(['black','red','blue','yellow']);
 var color_scale = chroma.scale(['yellow', '008ae5']);
