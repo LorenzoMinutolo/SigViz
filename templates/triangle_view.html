@@ -23,7 +23,15 @@
 <script>
   // TODO: add configuration exchange before calling window.open()
   function configure_plotter(){
-    window.open("{{ url_for('plotter') }}");
+    var descript = "" + selected_signal.length;
+    for(var i = 0; i< selected_signal.length; i++){
+      descript+= "%" + selected_signal[i]['kind']
+      var detect = selected_signal[i]['detectors'].split(" ")
+      for(var j = 0; j< detect.length; j++){
+        descript+= "-" + detect[j]
+      }
+    }
+    window.open("{{ url_for('plotter') }}/"+descript);
   }
 
 </script>

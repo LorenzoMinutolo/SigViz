@@ -4,8 +4,26 @@
 
 <div id='plotter_div'> </div>
 
+<script>
+  var plot_num = {{plot_num}};
+  var kinds = Array(0);
+  {% for i in range(kinds|length) %}
+      kinds.push("{{kinds[i]}}")
+  {% endfor %}
 
-<!-- focal plane code -->
+  var signals = Array({{signals|length}});
+  {% for i in range(signals|length) %}
+    signals[{{i}}] = new Array(0);
+    {% for j in range(signals[i]|length) %}
+      signals[{{i}}][{{j}}] = new Array(0);
+      {% for k in range(signals[i][j]|length) %}
+        signals[{{i}}][{{j}}].push("{{signals[i][j][k]}}")
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+</script>
+
+<!--js code -->
 <script type="text/javascript" src={{ url_for('static', filename = 'js/plotter_view.js') }}></script>
 
 {% endblock %}
