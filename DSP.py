@@ -99,18 +99,14 @@ class DSP(object):
         for i in range (len(detcol)):
             data_x.append(time_ax)
             data_y.append(self.signal[detcol[i], detrow[i], detpol[i], 0:samples].tolist())
-            print('data_x=',data_x)
-            print('data_y=',data_y)
 
             if mode[0]=='ps':
                 data_y_FT.append(np.fft.rfft(self.signal[detcol[i], detrow[i], detpol[i], 0:samples]))
-                print('data_y_FT=',data_y)
+
 
         if mode[0]=='ps':
             power_spect=(np.abs(data_y_FT)**2).tolist()
             #power_spect= (power_spect/np.max(power_spect)).tolist()
-            print(len(data_x))
-            print(len(power_spect))
 
 
         self.dummycounter+=samples
