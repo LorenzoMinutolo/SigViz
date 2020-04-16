@@ -110,25 +110,24 @@ class DSP(object):
 
             for j in range (len(detcol)):
                 data_x.append(time_ax)
-                print("detcol[j], detrow[j], self.convert_pol(detpol[j])=", detcol[j], detrow[j], self.convert_pol(detpol[j]))
-                data_y.append(self.signal[detcol[j]][detrow[j]][self.convert_pol(detpol[j])][0:int(samples)].tolist())
+                data_y.append(self.signal[int(detcol[j]), int(detrow[j]),self.convert_pol(detpol[j]), 0:int(samples)].tolist())
 
-                if mode[i]==['ps']:
+                if mode[i]=='ps':
                     data_y_FT.append(np.fft.rfft(self.signal[detcol[j], detrow[j], self.convert_pol(detpol[j]), 0:samples]))
 
-            if mode[i]==['ps']:
+            if mode[i]=='ps':
                 power_spect=(np.abs(data_y_FT)**2).tolist()
                 #power_spect= (power_spect/np.max(power_spect)).tolist()
 
 
             self.dummycounter+=samples
 
-            if mode[i]==['ts']:
+            if mode[i]=='ts':
                 select_det_signal.append( {
                 'data_x': data_x,
                 'data_y': data_y
                 })
-            elif mode[i]==['ps']:
+            elif mode[i]=='ps':
                 select_det_signal.append( {
                 'data_x': data_x,
                 'data_y': power_spect

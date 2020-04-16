@@ -5,8 +5,13 @@ var max_number_point = 10000
 //  grid: {rows: n_rows, columns: n_cols, pattern: 'independent'},
 //};
 
-function configure_plots_signal(c, r, traces){
-  n_cols = parseInt(c)
+const distinct = (value, index, self)=>{
+  return self.indexOf(value) === index ;
+}
+
+function configure_plots_signal(signal_traces, plot_modes){
+
+  //n_cols = (plot_modes.filter(distinct)).lenght
   n_rows = parseInt(r)
   n_plots = n_cols * n_rows
   //var plot_counter = Array.from(Array(n_plots).keys());
