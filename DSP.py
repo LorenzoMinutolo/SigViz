@@ -82,48 +82,53 @@ class DSP(object):
             return power_spect
 
 
-    def get_signal(self, one_target, mode, samples):
-        select_det_signal = {
-        'data_x': [],
-        'data_y': []
-        }
-        data_x=[]
-        data_y=[]
-        data_y_FT=[]
-        detcol = one_target[0]
-        detrow = one_target[1]
-        detpol = one_target[2]
-        time_ax=np.linspace(self.dummycounter, self.dummycounter+samples, samples, endpoint=False).tolist()
-        self.gen_signal(samples, time_ax)
+    def get_signal(self, target, mode, samples):
+        select_det_signal = []#dict() for x in range(len(target))]
+        for i in range (len(target)):
+            one_target=target[i]
+            print('one_target=', one_target)
+            #select_det_signal[i] = {
+            # 'data_x': [],
+            # 'data_y': []
+            # }
+            data_x=[]
+            data_y=[]
+            data_y_FT=[]
+            detcol = one_target[0]
+            detrow = one_target[1]
+            detpol = one_target[2]
+            time_ax=np.linspace(self.dummycounter, self.dummycounter+samples, samples, endpoint=False).tolist()
+            self.gen_signal(samples, time_ax)
 
-        for i in range (len(detcol)):
-            data_x.append(time_ax)
-            data_y.append(self.signal[detcol[i], detrow[i], detpol[i], 0:samples].tolist())
-
-            if mode[0]=='ps':
-                data_y_FT.append(np.fft.rfft(self.signal[detcol[i], detrow[i], detpol[i], 0:samples]))
-
-
-        if mode[0]=='ps':
-            power_spect=(np.abs(data_y_FT)**2).tolist()
-            #power_spect= (power_spect/np.max(power_spect)).tolist()
+            for j in range (len(detcol)):
+                data_x.append(time_ax)
+                data_y.append(self.signal[detcol[j], detrow[j], detpol[j], 0:samples].tolist())
 
 
-        self.dummycounter+=samples
+                if mode[i]=='ps':
+                    data_y_FT.append(np.fft.rfft(self.signal[detcol[j], detrow[j], detpol[j], 0:samples]))
 
-        if mode[0]=='ts':
-            select_det_signal = {
-            'data_x': data_x,
-            'data_y': data_y
-            }
-        elif mode[0]=='ps':
-            select_det_signal = {
-            'data_x': data_x,
-            'data_y': power_spect
-            }
+            if mode[i]=='ps':
+                power_spect=(np.abs(data_y_FT)**2).tolist()
+                #power_spect= (power_spect/np.max(power_spect)).tolist()
+
+
+            self.dummycounter+=samples
+
+            if mode[i]==['ts']:
+                select_det_signal.append( {
+                'data_x': data_x,
+                'data_y': data_y
+                })
+            elif mode[i]==['ps']:
+                select_det_signal.append( {
+                'data_x': data_x,
+                'data_y': power_spect
+                })
 
         #print(select_det_signal)
-        time.sleep(0.25)
+            time.sleep(0.25)
+
         return select_det_signal
 
 

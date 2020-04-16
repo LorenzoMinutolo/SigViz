@@ -42,14 +42,14 @@ function configure_plots_signal(c, r, traces){
 
 //for now select_signal gives just one mode
 var select_signal={
-'target':[[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,0,1,1,1,1,0,1,1,1]], //'target':[[detcol],[detrow],[detpol]]]
-'trace':['markers','markers','markers','lines'], //Describe what's the plotting mode of the traces
-'mode':['ts']  //ts=timestream; ps=powerspectrum --> leave as ts for now
+'target':[[[1,2,3],[1,2,3],[1,0,1]], [[4,5,6],[1,2,3],[1,0,1]]],//'target':[[detcol],[detrow],[detpol]]]
+//'trace':['lines'], //Describe what's the plotting mode of the traces
+'mode':[['ts'],['ts']]  //ts=timestream; ps=powerspectrum --> leave as ts for now
 }
 
 
 
-socket.on( 'config_plots', function( msg ) {
+socket.on('config_plots', function( msg ) {
   console.log("Received plot configurations...")
   msg_json = JSON.parse(msg)
   plot_counter = configure_plots_signal(msg_json['cols'], msg_json['rows'], msg_json['traces'])
@@ -62,10 +62,15 @@ socket.on('detectors_data', function( msg ) {
   console.log("Updating...")
   msg_json = JSON.parse(msg)
   //console.log(msg_json)
-  Plotly.extendTraces('plotter_div', {
-    y: msg_json['data_y'],
-    x: msg_json['data_x']
-  }, plot_counter, max_number_point)
+  console.log("signal=", msg_json)
+  for (i = 0; i < msg_json.length; i++) {
+    signal=msg_json[i];
+    console.log("signal=", signal)
+    Plotly.extendTraces('plotter_div', {
+      y: signal['data_y'],
+      x: signal['data_x']
+    }, plot_counter, max_number_point)
+  }
   //Plotly.restyle('main_plot', {'marker.color': (msg_json['colors'].map(color_scale)).map(x => x.hex())}, plot_counter)
   socket.emit('get_signal', select_signal)
 

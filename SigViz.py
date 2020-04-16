@@ -23,10 +23,10 @@ class plot_configuration(object):
 
         # just for example
         self.traces[0] = 'lines'
-        
+
 
 main_signal=DSP(18,18,1000)
-plot_config = plot_configuration(5, 2, 10, 0.1)
+plot_config = plot_configuration(3, 2, 10, 0.1)
 
 
 from routes import *
