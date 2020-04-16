@@ -21,7 +21,6 @@ var triangle_sig_mode = "data" //mode=0 for Bias; mode=else for signal
 
 var plot_mode = "ts" // To get the radio button mode plot select modal
 
-
 // docReady(
   $('#plotter-btn').prop("onclick", null).off("click");
   $('#plotter-btn').click(function() {
@@ -353,6 +352,7 @@ socket.on( 'triangle_config', function( msg ) {
       triangle_pos.push({'x':x,'y':y, 'A':make_triangleA(x,y), 'B':make_triangleB(x,y)})
     }
   }
+  console.log("triangle config")
   socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
 });
 
@@ -372,14 +372,24 @@ function update_colors(arr){
 
 docReady(function(){
   socket.emit('get_triangle_config', {})
+  // socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
 })
-
-socket.on( 'triangle_data', function( msg ) {
+var start_cycle = true;
+socket.on( 'triangle_data_respone', function( msg ) {
   console.log("Received plot configurations...")
   msg_json = JSON.parse(msg)
   update_colors(msg_json)
   // setTimeout(() => {  socket.emit('get_triangle', {}) }, 100);
-  socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
+  // setTimeout(function() { your_func(); }, 5000);
+  // socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
+  if(start_cycle){
+    start_cycle = false;
+    console.log("starting cycle...")
+    window.setInterval(function(){
+      socket.emit('get_triangle', {'triangle_sig_mode': triangle_sig_mode})
+    }, 200);
+  }
+
 });
 
 var tooltip = d3.select("div#triangle_viewer")

@@ -33,7 +33,7 @@ class DSP(object):
         self.dummycounter = 0
         #print(self.signal)
 
-    def get_triangle(self, f_low, f_high, lenght, mode = "data", rand=True):
+    def get_triangle(self, f_low, f_high, lenght, mode = "data", starting_tick = 0, rand=True):
         '''
         Return NX x NY x 2 tensor in 0 - 1 interval
         '''
@@ -46,14 +46,15 @@ class DSP(object):
             # Here you are updating the data. This should go in gen_signal, not here.
             # Generally I would keep the "get_" function indipendent from data generation. - LM
             if rand:
-                self.signal_lock.acquire()
-                if self.dummycounter!=self.dummy_triangle_counter:
-                    self.dummy_triangle_counter = self.dummycounter
-                    time_ax=np.linspace(self.dummycounter, self.dummycounter+lenght, lenght, endpoint=False).tolist()
+                #self.signal_lock.acquire()
+                if starting_tick!=self.dummy_triangle_counter:
+                    diff = np.abs(self.dummy_triangle_counter - starting_tick)
+                    lenght+=diff
+                    time_ax=np.linspace(starting_tick, starting_tick+lenght, lenght, endpoint=False).tolist()
                 else:
-                    time_ax= self.gen_signal(lenght)
-                    self.dummy_signal_counter = self.dummycounter
-                self.signal_lock.release()
+                    time_ax= self.gen_signal(200, noupdate = True)
+                    pass
+                #self.signal_lock.release()
             else:
                 self.read_mce_signal(lenght, datapath)
 
@@ -86,7 +87,7 @@ class DSP(object):
             #break a bunch of cols
             power_spect[7:9,:]*=0
             power_spect[12:13,:]*=0
-
+            #time.sleep(0.3)
             return power_spect
 
     def convert_pol(self, pol):
@@ -97,18 +98,25 @@ class DSP(object):
         else:
             raise ValueError('Polarization not defined.')
 
-    def get_signal(self, target, mode, samples):
-        self.signal_lock.acquire()
-        if self.dummycounter!=self.dummy_signal_counter:
-            diff = np.abs(self.dummy_signal_counter - self.dummycounter)
-            samples+=diff
-            time_ax=np.linspace(self.dummycounter, self.dummycounter+samples, samples, endpoint=False).tolist()
-            self.dummy_signal_counter = self.dummycounter
+    def get_signal(self, target, mode, samples, starting_tick):
+        print("starting from ",starting_tick)
+        starting_tick = int(starting_tick)
+        #self.signal_lock.acquire()
+        if int(starting_tick)+1<int(self.dummy_signal_counter):
+            print('got %d instead of %d' % (starting_tick, self.dummy_signal_counter))
+            diff = np.abs(self.dummy_signal_counter - starting_tick)
+
+            if diff>500:
+                starting_tick = self.dummy_signal_counter - samples # just to avoid long plotting time
+            else:
+                samples+=diff
+
+            time_ax=np.linspace(starting_tick, starting_tick+samples, samples, endpoint=False).tolist()
         else:
             time_ax=self.gen_signal(samples)
-            self.dummy_signal_counter = self.dummycounter
+            self.dummy_signal_counter+=samples
 
-        self.signal_lock.release()
+        #self.signal_lock.release()
 
         select_det_signal = {'data_x':[],'data_y':[]}
         for i in range (len(target)):
@@ -127,13 +135,13 @@ class DSP(object):
                     #data_y=self.signal[int(detcol[j])][int(detrow[j])][self.convert_pol(detpol[j])][self.dummycounter:self.dummycounter+int(samples)].tolist()
                     select_det_signal['data_y'].append(data_y)
 
-        #time.sleep(0.125)
+        # time.sleep(0.125)
         # print(target)
         # print(select_det_signal)
         return select_det_signal
 
 
-    def gen_signal(self, length):
+    def gen_signal(self, length, noupdate = False):
         '''
         Generate signal for length time interval.
         '''
@@ -148,7 +156,7 @@ class DSP(object):
         self.signal[:,:,:,0:length] = signal_wglitch
 
         self.bias=np.random.randint(200, 250, size=(self.Nx, self.Ny, 2)) #then will be read from .run file
-        self.dummycounter+=length
+        if(not noupdate): self.dummycounter+=length
 
         return time_ax
         #print(self.signal[:,:,:,0:length])

@@ -46,7 +46,7 @@ def tester(msg, methods=['GET', 'POST']):
 def get_triangle(msg, methods=['GET', 'POST']):
     print("\t\t\tupdating")
     x=main_signal.get_triangle(100,120,100, msg['triangle_sig_mode'])
-    socketio.emit('triangle_data', json.dumps(x.tolist()))
+    socketio.emit('triangle_data_respone', json.dumps(x.tolist()))
 
 @socketio.on('get_triangle_config')
 def get_triangle(msg, methods=['GET', 'POST']):
@@ -59,7 +59,7 @@ def get_signal(msg, methods=['GET', 'POST']):
     print("\t\t\tupdating")
     window_UUID = msg['window_UUID']
     #print('Target,Mode=',msg['target'],msg['mode'])
-    x=main_signal.get_signal(msg['target'],msg['mode'], samples=25)
+    x=main_signal.get_signal(msg['target'],msg['mode'], samples=25, starting_tick = msg['last_time'])
     #print("signal_x=", x)
     socketio.emit('detectors_data',json.dumps(x),namespace="/"+window_UUID)
 

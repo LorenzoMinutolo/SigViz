@@ -15,6 +15,11 @@ var window_UUID = makeid(50);
     });
 // });
 
+// orrible, orrible js...
+Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
 var max_number_point = 1000;
 
 // just initially
@@ -93,7 +98,8 @@ function configure_plots_signal(signal_traces, plot_modes){
 var select_signal={
 'target':signals,//'target':[[detcol],[detrow],[detpol]]]
 'mode':kinds,  //ts=timestream; ps=powerspectrum --> leave as ts for now
-'window_UUID':window_UUID //for multiple plotting windows
+'window_UUID':window_UUID, //for multiple plotting windows
+'last_time':0 // Correct multiwindowed update
 }
 
 // socket.on('config_plots', function( msg ) {
@@ -108,14 +114,15 @@ var select_signal={
 usocket.on('detectors_data', function( msg ) {
   console.log("Updating...")
   msg_json = JSON.parse(msg)
-  //console.log(msg_json)
-  console.log("signal=", msg_json)
-  console.log("update_map: ",plot_counter)
+  // console.log(msg_json)
+  // console.log("signal=", msg_json)
+  // console.log("update_map: ",plot_counter)
   Plotly.extendTraces('plotter_div', {
     y: msg_json['data_y'],
     x: msg_json['data_x']
   }, plot_counter, max_number_point)
-
+  console.log(msg_json['data_x'][0])
+  select_signal['last_time'] = msg_json['data_x'][0].max()
   //Plotly.restyle('main_plot', {'marker.color': (msg_json['colors'].map(color_scale)).map(x => x.hex())}, plot_counter)
   socket.emit('get_signal', select_signal)
 
