@@ -1,6 +1,9 @@
 
-var max_number_point = 10000
+var max_number_point = 10000;
 
+// just initially
+var n_cols=0;
+var n_rows=0;
 //var layout = {
 //  grid: {rows: n_rows, columns: n_cols, pattern: 'independent'},
 //};
@@ -9,36 +12,52 @@ const distinct = (value, index, self)=>{
   return self.indexOf(value) === index ;
 }
 
+// Given x and y of a plot (not a detector) position returns the data index
+function xy2n(col, row){
+  return col*n_cols + row;
+}
+
 function configure_plots_signal(signal_traces, plot_modes){
 
   //n_cols = (plot_modes.filter(distinct)).lenght
-  n_rows = parseInt(r)
-  n_plots = n_cols * n_rows
+  console.log(signal_traces)
+  n_plots = signal_traces.length
+  if(n_plots < 4){
+    n_cols = 1;
+    n_rows = n_plots;
+  }else{
+    n_rows = parseInt(Math.ceil(Math.sqrt(n_plots)))
+    n_cols = n_rows;
+  }
+
+  console.log("dims: "+n_rows+" from plotn: "+n_plots)
   //var plot_counter = Array.from(Array(n_plots).keys());
-  console.log(n_plots,n_cols,n_rows)
   data = []
-
-
-
-  for (var i = 0; i < n_cols; i++) {
-    for (var j = 0; j < n_rows; j++) {
-      // console.log("Adding plot with trace: "+traces[i*n_cols +j])
-      data.push({
-        x: [],
-        y: [],
-        xaxis: 'x'+(i+1),
-        yaxis: 'y'+(j+1),
-        type: 'scattergl', //pointcloud could be better
-        mode: 'lines',//traces[i*n_cols +j],
-        hoverinfo:'skip'
-      });
+  var plot_counter = Array(0);
+  var trace_counter = 0
+  for (var i = 0; i < n_cols; i++) { // Loop over cols
+    for (var j = 0; j < n_rows; j++) { // Loop over rows
+      for (var k = 0; k< signals[xy2n(i,j)][0].length; k++){ // Loop over detectors
+        plot_counter.push(trace_counter);
+        data.push({
+          x: [],
+          y: [],
+          xaxis: 'x'+(i+1), // The axis binding only depends on plot coords, not detector
+          yaxis: 'y'+(j+1),
+          type: 'scattergl',
+          mode: 'lines', // Fixed for now
+          name: 'trace# '+ trace_counter,
+          hoverinfo:'skip'
+        });
+        trace_counter += 1;
+      }
     }
   }
   layout = {
-  grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}},
-  showlegend: false,
+    // grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}}, showlegend: false // REMOVED FOR NOW
+    grid: {rows: n_rows, columns: n_cols} 
   }
-  plot_counter = Array.from(Array(n_plots).keys());
+  // plot_counter = Array.from(Array(n_plots).keys());
   Plotly.purge('plotter_div');
   Plotly.newPlot('plotter_div', data, layout, {staticPlot: true});
   return plot_counter;
@@ -55,15 +74,14 @@ var select_signal={
 'target':signals,//'target':[[detcol],[detrow],[detpol]]]
 'mode':kinds  //ts=timestream; ps=powerspectrum --> leave as ts for now
 }
-console.log('select_signal=', select_signal)
 
-socket.on('config_plots', function( msg ) {
-  console.log("Received plot configurations...")
-  msg_json = JSON.parse(msg)
-  plot_counter = configure_plots_signal(msg_json['cols'], msg_json['rows'], msg_json['traces'])
-  socket.emit('get_signal', select_signal)
-
-});
+// socket.on('config_plots', function( msg ) {
+//   console.log("Received plot configurations...")
+//   msg_json = JSON.parse(msg)
+//   plot_counter = configure_plots_signal(msg_json['cols'], msg_json['rows'], msg_json['traces'])
+//   socket.emit('get_signal', select_signal)
+//
+// });
 
 
 socket.on('detectors_data', function( msg ) {
@@ -71,20 +89,20 @@ socket.on('detectors_data', function( msg ) {
   msg_json = JSON.parse(msg)
   //console.log(msg_json)
   console.log("signal=", msg_json)
-  for (i = 0; i < msg_json.length; i++) {
-    signal=msg_json[i];
-    console.log("signal=", signal)
-    Plotly.extendTraces('plotter_div', {
-      y: signal['data_y'],
-      x: signal['data_x']
-    }, plot_counter, max_number_point)
-  }
+  console.log("update_map: ",plot_counter)
+  Plotly.extendTraces('plotter_div', {
+    y: msg_json['data_y'],
+    x: msg_json['data_x']
+  }, plot_counter, max_number_point)
+
   //Plotly.restyle('main_plot', {'marker.color': (msg_json['colors'].map(color_scale)).map(x => x.hex())}, plot_counter)
   socket.emit('get_signal', select_signal)
 
 });
 
 
-docReady(
-  socket.emit('request_config', {})
-);
+docReady(function(){
+  plot_counter = configure_plots_signal(signals, kinds);
+  // socket.emit('request_config', {})
+  socket.emit('get_signal', select_signal)
+});

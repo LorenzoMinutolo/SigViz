@@ -90,52 +90,28 @@ class DSP(object):
             raise ValueError('Polarization not defined.')
 
     def get_signal(self, target, mode, samples):
-        print("samples=", samples)
-        select_det_signal = []#dict() for x in range(len(target))]
+        time_ax=np.linspace(self.dummycounter, self.dummycounter+samples, samples, endpoint=False).tolist()
+        self.gen_signal(samples, time_ax)
+        select_det_signal = {'data_x':[],'data_y':[]}
         for i in range (len(target)):
             one_target=target[i]
-            print('one_target=', one_target)
-            #select_det_signal[i] = {
-            # 'data_x': [],
-            # 'data_y': []
-            # }
-            data_x=[]
-            data_y=[]
-            data_y_FT=[]
             detcol = one_target[0]
             detrow = one_target[1]
             detpol = one_target[2]
-            time_ax=np.linspace(self.dummycounter, self.dummycounter+samples, samples, endpoint=False).tolist()
-            self.gen_signal(samples, time_ax)
-
             for j in range (len(detcol)):
-                data_x.append(time_ax)
-                data_y.append(self.signal[int(detcol[j]), int(detrow[j]),self.convert_pol(detpol[j]), 0:int(samples)].tolist())
-
+                select_det_signal['data_x'].append(time_ax)
                 if mode[i]=='ps':
-                    data_y_FT.append(np.fft.rfft(self.signal[detcol[j], detrow[j], self.convert_pol(detpol[j]), 0:samples]))
+                    data_y_FT = np.fft.rfft(self.signal[detcol[j], detrow[j], self.convert_pol(detpol[j]), 0:samples])
+                    power_spect=(np.abs(data_y_FT)**2).tolist()
+                    select_det_signal['data_y'].append(self.signal[int(detcol[j]), int(detrow[j]),self.convert_pol(detpol[j]), 0:self.dummycounter+int(samples)].tolist())
+                elif mode[i]=='ts':
+                    data_y=self.signal[int(detcol[j])][int(detrow[j])][self.convert_pol(detpol[j])][self.dummycounter:self.dummycounter+int(samples)].tolist()
+                    select_det_signal['data_y'].append(data_y)
 
-            if mode[i]=='ps':
-                power_spect=(np.abs(data_y_FT)**2).tolist()
-                #power_spect= (power_spect/np.max(power_spect)).tolist()
-
-
-            self.dummycounter+=samples
-
-            if mode[i]=='ts':
-                select_det_signal.append( {
-                'data_x': data_x,
-                'data_y': data_y
-                })
-            elif mode[i]=='ps':
-                select_det_signal.append( {
-                'data_x': data_x,
-                'data_y': power_spect
-                })
-
-        #print(select_det_signal)
-            time.sleep(0.25)
-
+        self.dummycounter+=samples
+        time.sleep(0.25)
+        print(target)
+        print(select_det_signal)
         return select_det_signal
 
 
