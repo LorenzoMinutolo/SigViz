@@ -25,7 +25,7 @@ var plot_mode = "ts" // To get the radio button mode plot select modal
 // docReady(
   $('#plotter-btn').prop("onclick", null).off("click");
   $('#plotter-btn').click(function() {
-       $("#modal_plot_select")
+       // $("#modal_plot_select")
        $("#modal_plot_launch").modal('show')
   });
 // );
@@ -66,7 +66,6 @@ function add_signal(){
       'detectors':signals
     }
   )
-  console.log(selected_signal);
   update_sig_table()
   reset_selection()
   $("#plotter-btn").html("Plotter ("+selected_signal.length+")")

@@ -17,14 +17,14 @@ function configure_plots_signal(c, r, traces){
 
   for (var i = 0; i < n_cols; i++) {
     for (var j = 0; j < n_rows; j++) {
-      console.log("Adding plot with trace: "+traces[i*n_cols +j])
+      // console.log("Adding plot with trace: "+traces[i*n_cols +j])
       data.push({
         x: [],
         y: [],
         xaxis: 'x'+(i+1),
         yaxis: 'y'+(j+1),
         type: 'scattergl', //pointcloud could be better
-        mode: traces[i*n_cols +j],
+        mode: 'lines',//traces[i*n_cols +j],
         hoverinfo:'skip'
       });
     }
@@ -41,13 +41,16 @@ function configure_plots_signal(c, r, traces){
 
 
 //for now select_signal gives just one mode
+// var select_signal={
+// 'target':[[[1,2,3],[1,2,3],[1,0,1]], [[4,5,6],[1,2,3],[1,0,1]]],//'target':[[detcol],[detrow],[detpol]]]
+// //'trace':['lines'], //Describe what's the plotting mode of the traces
+// 'mode':[['ts'],['ts']]  //ts=timestream; ps=powerspectrum --> leave as ts for now
+// }
 var select_signal={
-'target':[[[1,2,3],[1,2,3],[1,0,1]], [[4,5,6],[1,2,3],[1,0,1]]],//'target':[[detcol],[detrow],[detpol]]]
-//'trace':['lines'], //Describe what's the plotting mode of the traces
-'mode':[['ts'],['ts']]  //ts=timestream; ps=powerspectrum --> leave as ts for now
+'target':signals,//'target':[[detcol],[detrow],[detpol]]]
+'mode':kinds  //ts=timestream; ps=powerspectrum --> leave as ts for now
 }
-
-
+console.log('select_signal=', select_signal)
 
 socket.on('config_plots', function( msg ) {
   console.log("Received plot configurations...")
