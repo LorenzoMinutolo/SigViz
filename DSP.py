@@ -81,8 +81,16 @@ class DSP(object):
 
             return power_spect
 
+    def convert_pol(self, pol):
+        if pol=='A':
+            return 0
+        elif pol=='B':
+            return 1
+        else:
+            raise ValueError('Polarization not defined.')
 
     def get_signal(self, target, mode, samples):
+        print("samples=", samples)
         select_det_signal = []#dict() for x in range(len(target))]
         for i in range (len(target)):
             one_target=target[i]
@@ -102,13 +110,13 @@ class DSP(object):
 
             for j in range (len(detcol)):
                 data_x.append(time_ax)
-                data_y.append(self.signal[detcol[j], detrow[j], detpol[j], 0:samples].tolist())
+                print("detcol[j], detrow[j], self.convert_pol(detpol[j])=", detcol[j], detrow[j], self.convert_pol(detpol[j]))
+                data_y.append(self.signal[detcol[j]][detrow[j]][self.convert_pol(detpol[j])][0:int(samples)].tolist())
 
+                if mode[i]==['ps']:
+                    data_y_FT.append(np.fft.rfft(self.signal[detcol[j], detrow[j], self.convert_pol(detpol[j]), 0:samples]))
 
-                if mode[i]=='ps':
-                    data_y_FT.append(np.fft.rfft(self.signal[detcol[j], detrow[j], detpol[j], 0:samples]))
-
-            if mode[i]=='ps':
+            if mode[i]==['ps']:
                 power_spect=(np.abs(data_y_FT)**2).tolist()
                 #power_spect= (power_spect/np.max(power_spect)).tolist()
 
