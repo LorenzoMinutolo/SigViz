@@ -103,9 +103,10 @@ class DSP(object):
                 if mode[i]=='ps':
                     data_y_FT = np.fft.rfft(self.signal[detcol[j], detrow[j], self.convert_pol(detpol[j]), 0:samples])
                     power_spect=(np.abs(data_y_FT)**2).tolist()
-                    select_det_signal['data_y'].append(self.signal[int(detcol[j]), int(detrow[j]),self.convert_pol(detpol[j]), 0:self.dummycounter+int(samples)].tolist())
+                    select_det_signal['data_y'].append(self.signal[int(detcol[j]), int(detrow[j]),self.convert_pol(detpol[j]), 0:samples].tolist())
                 elif mode[i]=='ts':
-                    data_y=self.signal[int(detcol[j])][int(detrow[j])][self.convert_pol(detpol[j])][self.dummycounter:self.dummycounter+int(samples)].tolist()
+                    data_y=self.signal[int(detcol[j])][int(detrow[j])][self.convert_pol(detpol[j])][0:samples].tolist()
+                    #data_y=self.signal[int(detcol[j])][int(detrow[j])][self.convert_pol(detpol[j])][self.dummycounter:self.dummycounter+int(samples)].tolist()
                     select_det_signal['data_y'].append(data_y)
 
         self.dummycounter+=samples
