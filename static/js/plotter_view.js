@@ -1,5 +1,21 @@
+var window_UUID = makeid(50);
 
-var max_number_point = 10000;
+// $(document).ready(function(){
+    var usocket = io.connect('http://' + document.domain + ':' + location.port + "/" + window_UUID);
+    usocket.on('my response', function(msg) {
+        $('#log').append('<p>Received: ' + msg.data + '</p>');
+    });
+    $('form#emit').submit(function(event) {
+        usocket.emit('my event', {data: $('#emit_data').val()});
+        return false;
+    });
+    $('form#broadcast').submit(function(event) {
+        usocket.emit('my broadcast event', {data: $('#broadcast_data').val()});
+        return false;
+    });
+// });
+
+var max_number_point = 1000;
 
 // just initially
 var n_cols=0;
@@ -37,25 +53,29 @@ function configure_plots_signal(signal_traces, plot_modes){
   var trace_counter = 0
   for (var i = 0; i < n_cols; i++) { // Loop over cols
     for (var j = 0; j < n_rows; j++) { // Loop over rows
-      for (var k = 0; k< signals[xy2n(i,j)][0].length; k++){ // Loop over detectors
-        plot_counter.push(trace_counter);
-        data.push({
-          x: [],
-          y: [],
-          xaxis: 'x'+(i+1), // The axis binding only depends on plot coords, not detector
-          yaxis: 'y'+(j+1),
-          type: 'scattergl',
-          mode: 'lines', // Fixed for now
-          name: 'trace# '+ trace_counter,
-          hoverinfo:'skip'
-        });
-        trace_counter += 1;
+      console.log(xy2n(i,j))
+      if(xy2n(i,j)<signals.length){
+          for (var k = 0; k< signals[xy2n(i,j)][0].length; k++){ // Loop over detectors
+
+          plot_counter.push(trace_counter);
+          data.push({
+            x: [],
+            y: [],
+            xaxis: 'x'+(i+1), // The axis binding only depends on plot coords, not detector
+            yaxis: 'y'+(j+1),
+            type: 'scattergl',
+            mode: 'lines', // Fixed for now
+            name: 'col '+ signals[xy2n(i,j)][0][k] + " row "+signals[xy2n(i,j)][1][k]+" pol " + signals[xy2n(i,j)][2][k],
+            hoverinfo:'skip'
+          });
+          trace_counter += 1;
+        }
       }
     }
   }
   layout = {
     // grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}}, showlegend: false // REMOVED FOR NOW
-    grid: {rows: n_rows, columns: n_cols} 
+    grid: {rows: n_rows, columns: n_cols}
   }
   // plot_counter = Array.from(Array(n_plots).keys());
   Plotly.purge('plotter_div');
@@ -72,7 +92,8 @@ function configure_plots_signal(signal_traces, plot_modes){
 // }
 var select_signal={
 'target':signals,//'target':[[detcol],[detrow],[detpol]]]
-'mode':kinds  //ts=timestream; ps=powerspectrum --> leave as ts for now
+'mode':kinds,  //ts=timestream; ps=powerspectrum --> leave as ts for now
+'window_UUID':window_UUID //for multiple plotting windows
 }
 
 // socket.on('config_plots', function( msg ) {
@@ -84,7 +105,7 @@ var select_signal={
 // });
 
 
-socket.on('detectors_data', function( msg ) {
+usocket.on('detectors_data', function( msg ) {
   console.log("Updating...")
   msg_json = JSON.parse(msg)
   //console.log(msg_json)

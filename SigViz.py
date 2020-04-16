@@ -25,7 +25,7 @@ class plot_configuration(object):
         self.traces[0] = 'lines'
 
 
-main_signal=DSP(18,18,1000)
+main_signal=DSP(18,18,10000)
 plot_config = plot_configuration(3, 2, 10, 0.1)
 
 
