@@ -99,7 +99,7 @@ class DSP(object):
             raise ValueError('Polarization not defined.')
 
     def get_signal(self, target, mode, samples, starting_tick):
-        print("starting from ",starting_tick)
+        #print("starting from ",starting_tick)
         starting_tick = int(starting_tick)
         #self.signal_lock.acquire()
         if int(starting_tick)+1<int(self.dummy_signal_counter):

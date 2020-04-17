@@ -44,19 +44,19 @@ def tester(msg, methods=['GET', 'POST']):
 
 @socketio.on('get_triangle')
 def get_triangle(msg, methods=['GET', 'POST']):
-    print("\t\t\tupdating")
+    # print("\t\t\tupdating")
     x=main_signal.get_triangle(100,120,100, msg['triangle_sig_mode'])
     socketio.emit('triangle_data_respone', json.dumps(x.tolist()))
 
 @socketio.on('get_triangle_config')
 def get_triangle(msg, methods=['GET', 'POST']):
-    print("\t\t\tEmitting triangle configuration: cols: %d, rows: %d"%(main_signal.Nx,main_signal.Ny))
+    print("updating triangles: cols: %d, rows: %d"%(main_signal.Nx,main_signal.Ny))
     socketio.emit('triangle_config', json.dumps({'ncols':main_signal.Nx,'nrows':main_signal.Ny}))
 
 # msg={'detectors':{'data_x':..,'data_y':..}}
 @socketio.on('get_signal')
 def get_signal(msg, methods=['GET', 'POST']):
-    print("\t\t\tupdating")
+    print("updating data on window: " + msg['window_UUID'])
     window_UUID = msg['window_UUID']
     #print('Target,Mode=',msg['target'],msg['mode'])
     x=main_signal.get_signal(msg['target'],msg['mode'], samples=25, starting_tick = msg['last_time'])

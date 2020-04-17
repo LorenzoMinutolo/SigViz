@@ -83,7 +83,7 @@ function configure_plots_signal(signal_traces, plot_modes){
   }
   layout = {
     // grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}}, showlegend: false // REMOVED FOR NOW
-    grid: {rows: n_rows, columns: n_cols}
+    grid: {rows: n_rows, columns: n_cols, pattern: 'indepenent'}
 
   };
 
@@ -93,21 +93,25 @@ function configure_plots_signal(signal_traces, plot_modes){
 
   for (var i = 0; i < n_cols; i++) { // Loop over cols
     for (var j = 0; j < n_rows; j++) { // Loop over rows
-      if(i==0){col='';}else{col=i;}
-      if(j==0){row='';}else{row=j;}
-      if (plot_modes[xy2n(i,j)]=='ts'){
+      if(i==0){col='';}else{col=String(i+1);}
+      if(j==0){row='';}else{row=String(j+1);}
+
+      // if (plot_modes[xy2n(i,j)]=='ts'){
         var titlex='sample#';
         var titley='Amplitude'
+      // }
+      console.log("col: "+col+ " row: "+row)
+      Plotly.relayout('plotter_div',
+        {
+          ['xaxis'+col]: {
+            title: titlex
+          },
+          ['yaxis'+row]: {
+            title: titley
+          }
       }
-      var update = {
-        'xaxis'+col: {
-          title: titlex
-        },
-        'yaxis'+row: {
-          title: titley
-        }    // updates the end of the yaxis range
-      };
-      Plotly.relayout('plotter_div', update);
+      );
+
     }
   }
   return plot_counter;
