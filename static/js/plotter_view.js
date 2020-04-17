@@ -56,9 +56,12 @@ function configure_plots_signal(signal_traces, plot_modes){
   data = []
   var plot_counter = Array(0);
   var trace_counter = 0
+  var subplot_title = Array(0);
   for (var i = 0; i < n_cols; i++) { // Loop over cols
     for (var j = 0; j < n_rows; j++) { // Loop over rows
-      console.log(xy2n(i,j))
+      console.log(xy2n(i,j));
+      console.log(plot_modes[xy2n(i,j)]);
+      subplot_title.push(plot_modes[xy2n(i,j)])
       if(xy2n(i,j)<signals.length){
           for (var k = 0; k< signals[xy2n(i,j)][0].length; k++){ // Loop over detectors
 
@@ -81,12 +84,35 @@ function configure_plots_signal(signal_traces, plot_modes){
   layout = {
     // grid: {rows: n_rows, columns: n_cols, pattern: 'coupled', xaxes: {fixedrange: true}, yaxes: {fixedrange: true}}, showlegend: false // REMOVED FOR NOW
     grid: {rows: n_rows, columns: n_cols}
-  }
+
+  };
+
   // plot_counter = Array.from(Array(n_plots).keys());
   Plotly.purge('plotter_div');
   Plotly.newPlot('plotter_div', data, layout, {staticPlot: true});
+
+  for (var i = 0; i < n_cols; i++) { // Loop over cols
+    for (var j = 0; j < n_rows; j++) { // Loop over rows
+      if(i==0){col='';}else{col=i;}
+      if(j==0){row='';}else{row=j;}
+      if (plot_modes[xy2n(i,j)]=='ts'){
+        var titlex='sample#';
+        var titley='Amplitude'
+      }
+      var update = {
+        'xaxis'+col: {
+          title: titlex
+        },
+        'yaxis'+row: {
+          title: titley
+        }    // updates the end of the yaxis range
+      };
+      Plotly.relayout('plotter_div', update);
+    }
+  }
   return plot_counter;
 }
+
 
 
 //for now select_signal gives just one mode
