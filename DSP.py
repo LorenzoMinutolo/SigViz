@@ -164,7 +164,7 @@ class DSP(object):
 
     def read_mce_signal(self, length, datapath):
         '''
-        Reading signal from mce data file for a giver (row,col) set for length time interval.
+        Reading signal from mce data file for all the (detrow,detcol) set for length time interval, and populates the full tensor.
         '''
         #randomly generating row and col for now
         for i in range (self.Nx):
