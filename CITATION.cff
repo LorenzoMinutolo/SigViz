@@ -1,8 +1,8 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-  - family-names: Fatigoni, Minutolo
-    given-names: Sofia, Lorenzo
+  - family-names: Fatigoni S., Minutolo L.
+    given-names: 
 title: "SigViz"
 version: 0.0
 doi: https://github.com/LorenzoMinutolo/SigViz/new/master
